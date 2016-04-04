@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+********************************************************************************************************
+The local Initial Query Execution Plan (QEP), ie. no remote operations
+********************************************************************************************************
+helpdesk@linea.gov.br --> 
+<QEPTemplate xmlns="http://giga03.lncc.br/DIP/WP4/CoDIMS-D" xmlns:op="http://giga03.lncc.br/DIP/WP4/CoDIMS-D/Operator" xmlns:qep="http://giga03.lncc.br/DIP/WP4/CoDIMS-D/QEP">
+	
+    <qep:QEP type="Initial">		
+        <op:Operator id="1" prod="2" type="">
+            <Name>ParallelNACluster</Name>
+            <ParameterList>
+                <Spark>"spark-submit --master yarn-cluster --executor-memory 5G --executor-cores 2 --num-executors 4 --verbose --conf "spark.executor.extraJavaOptions=-XX:+UseConcMarkSweepGC" --conf spark.yarn.executor.memoryOverhead=512"</Spark>                     		
+                <Projectjar>/app/ParallelNACluster.jar</Projectjar>	           		
+            </ParameterList>		
+        </op:Operator>	
+
+        <op:Operator id="2" prod="3" type="">
+            <Name>MapReduce</Name>
+            <ParameterList>
+                <PathHadoop>>/usr/local/hadoop/bin/hadoop</PathHadoop>
+                <Projectjar>/app/OperatorMapRedFinal.jar</Projectjar>                                       
+            </ParameterList>
+        </op:Operator>			
+        <op:Operator id="3" prod="4" type="">
+            <Name>CopytoHdfs</Name>
+            <ParameterList>
+                <HDFS>hdfs://mnmaster:9000</HDFS>                
+            </ParameterList>
+        </op:Operator>
+
+        <op:Operator id="4" prod="5" type="">
+            <Name>France</Name>
+            <ParameterList>
+                <NumberOfPartitions>5</NumberOfPartitions>                   
+            </ParameterList>
+        </op:Operator>
+        
+        <op:Operator id="5" prod="0" type="Scan" numberTuples="?">
+            <Name>TupleScan</Name>
+            <ParameterList>
+                <DataSourceName>RelationalDataSource</DataSourceName>
+                <DatabaseIRI>/Dataset/2mass1MilhaoShaked3AmbNivel0.txt</DatabaseIRI>
+            </ParameterList>
+        </op:Operator>
+		
+    </qep:QEP>
+</QEPTemplate>

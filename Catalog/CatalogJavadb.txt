@@ -1,0 +1,120 @@
+drop table objectType;
+drop table codims_type;
+drop table operatortype;
+drop table RequestTypeTemplate;
+drop table PlanTemplate;
+drop table RequestType;
+drop table initialConfig;
+drop table datasource;
+drop table databases;
+
+create table datasource
+ (iddatasource numeric(4) primary key,
+  name varchar(200),
+  classname char(150));
+
+create table initialConfig
+ (idConfig numeric(4) primary key,
+  keyName char(150),
+  value char(150));
+
+create table RequestType
+ (idrequest decimal (2),
+  description varchar(200),
+  constraint RequestTypepk primary key (idrequest));
+
+-- Hold the path to a QEP
+create table PlanTemplate
+ (idTemplate decimal(2),
+  templatetype integer,
+  path varchar(200),
+  constraint plantemplatepk primary key (idtemplate));
+
+-- Associate a request type to its corresponding template definition
+create table RequestTypeTemplate
+ (idrequest decimal (2),
+  idTemplate decimal(2),
+  constraint plantemplatefk foreign key (idTemplate) references PlanTemplate(idTemplate));
+
+-- Define the classname to be loaded according to the operators in the QEP (used by the reflection)
+create table operatortype
+ (idoperatortype decimal(2) primary key,
+  name varchar(100),
+  classname char(150));
+
+create table codims_type
+ (idtype integer primary key,
+  classname char(100),
+  description varchar(50));
+
+-- Used by the catalogManager for querying codims object
+create table objectType
+ (id decimal(4) primary key,
+  description varchar(200),
+  query varchar(1000));
+
+create table databases
+ (idBD integer primary key,
+  iri char(150),
+  driverName varchar(200),
+  host varchar(200),
+  username varchar(200),
+  passwrd varchar(200),
+  maxconnection integer);
+
+INSERT INTO codims_type VALUES (1, 'ch.epfl.codimsd.qeef.types.FloatType', 'Type Definitions');
+
+INSERT INTO codims_type VALUES (2, 'ch.epfl.codimsd.qeef.types.IntegerType', 'Type Definitions');
+
+INSERT INTO codims_type VALUES (3, 'ch.epfl.codimsd.qeef.types.OracleType', 'Type Definitions');
+
+INSERT INTO codims_type VALUES (4, 'ch.epfl.codimsd.qeef.types.StringType', 'Type Definitions');
+
+INSERT INTO codims_type VALUES (5, 'ch.epfl.codimsd.qeef.types.ArrayListType', 'Type Definitions');
+
+INSERT INTO codims_type VALUES (6, 'ch.epfl.codimsd.qeef.types.Type', 'Type Definitions');
+
+INSERT INTO initialConfig Values (1, 'codims.home','/codims-home');
+
+INSERT INTO PlanTemplate Values (0, 0, '/QEP/QEPInitial.xml');
+
+INSERT INTO PlanTemplate Values (1, 0, '/QEP/QEPInitialADD.xml');
+
+INSERT INTO RequestType Values (0,'REQUEST_TYPE_SERVICE_WEBB');
+
+INSERT INTO RequestType Values (1,'REQUEST_TYPE_SERVICE_SKYMAP');
+
+INSERT INTO RequestType Values (2,'REQUEST_TYPE_SERVICE_SKYMAPADD');
+
+INSERT INTO RequestTypeTemplate Values (0,0);
+
+INSERT INTO RequestTypeTemplate Values (1,0);
+
+INSERT INTO RequestTypeTemplate Values (2,1);
+
+INSERT INTO operatortype Values (1, 'TupleScan', 'ch.epfl.codimsd.qeef.nacluster.TupleScan');
+
+INSERT INTO operatortype Values (2, 'France', 'ch.epfl.codimsd.qeef.nacluster.France');
+
+INSERT INTO operatortype Values (3, 'CopytoHdfs', 'ch.epfl.codimsd.qeef.nacluster.CopytoHdfs');
+
+INSERT INTO operatortype Values (4, 'MapReduce', 'ch.epfl.codimsd.qeef.nacluster.MapReduce');
+
+INSERT INTO datasource Values (1, 'RelationalDataSource', 'ch.epfl.codimsd.qeef.RelationalDataSource');
+
+INSERT INTO objectType values (1, 'initialConfig', 'SELECT * FROM initialConfig');
+
+INSERT INTO objectType values (2, 'template', 'SELECT * FROM template');
+
+INSERT INTO objectType values (3, 'operatortype', 'SELECT * FROM operatortype');
+
+INSERT INTO objectType values (4, 'datasource', 'SELECT * FROM datasource');
+
+INSERT INTO objectType values (5, 'objectType', 'SELECT * FROM objectType');
+
+INSERT INTO databases Values 
+(1, 'SourceBD','org.postgresql.Driver','jdbc:postgresql://localhost:5432/qefdb','postgres','root', 50000);
+
+INSERT INTO databases Values 
+(2, 'Catalogo','/home/rodrigob/Projeto NAcluster/manycatalogues','XXXXXX','yyyyyy','zzzz', 50000);
+

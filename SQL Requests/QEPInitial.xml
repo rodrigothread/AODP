@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+********************************************************************************************************
+The local Initial Query Execution Plan (QEP), ie. no remote operations
+********************************************************************************************************
+helpdesk@linea.gov.br --> 
+<QEPTemplate xmlns="http://giga03.lncc.br/DIP/WP4/CoDIMS-D" xmlns:op="http://giga03.lncc.br/DIP/WP4/CoDIMS-D/Operator" xmlns:qep="http://giga03.lncc.br/DIP/WP4/CoDIMS-D/QEP">
+	
+    <qep:QEP type="Initial">
+
+        <op:Operator id="1" prod="2" type="">
+            <Name>MapReduce</Name>
+            <ParameterList>
+                <Projectjar>/home/rodrigob/ProjetoNAcluster/NaClusterMapReduce/target/NaClusterMapReduce-1.0-SNAPSHOT.jar</Projectjar>
+                <Class>hadoop.OperatorMapRedMapper</Class>
+                <FileName>/user/rodrigo/data/manycatalogues</FileName>
+                <FileName1>/user/rodrigo/data/partitionfrance.txt</FileName1>
+                <FileResult>/user/rodrigo/result</FileResult>
+                <NumberOfPartitions>10</NumberOfPartitions>
+            </ParameterList>
+        </op:Operator>			
+        <op:Operator id="2" prod="3" type="">
+            <Name>CopytoHdfs</Name>
+            <ParameterList>
+                <HDFS1>fs.defaultFS</HDFS1>
+                <HDFS2>hdfs://146.134.232.10:9000</HDFS2>
+                <FileName>/home/rodrigob/ProjetoNAcluster/data/partitions.txt</FileName>
+                <FileName1>/home/rodrigob/ProjetoNAcluster/data/manycatalogues.txt</FileName1>
+            </ParameterList>
+        </op:Operator>
+
+        <op:Operator id="3" prod="4" type="">
+            <Name>France</Name>
+            <ParameterList>
+                <FileName>/home/rodrigob/ProjetoNAcluster/data/partitions.txt</FileName>
+                <Franceexe>/home/rodrigob/ProjetoNAcluster/france.exe</Franceexe>
+                <FileName1>/home/rodrigob/ProjetoNAcluster/data/manycatalogues.txt</FileName1>
+                <NumberOfPartitions>10</NumberOfPartitions>
+            </ParameterList>
+        </op:Operator>
+		
+        <op:Operator id="4" prod="0" type="Scan" numberTuples="?">
+            <Name>TupleScan</Name>
+            <ParameterList>
+                <DataSourceName>RelationalDataSource</DataSourceName>
+                <DatabaseIRI>/home/rodrigob/ProjetoNAcluster/manycatalogues</DatabaseIRI>
+            </ParameterList>
+        </op:Operator>
+    </qep:QEP>
+</QEPTemplate>
